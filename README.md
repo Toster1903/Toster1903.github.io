@@ -55,9 +55,3 @@ git clone https://github.com/your-username/your-repo.git
 - Интерактивные эффекты для карточек
 - Анимации для социальных иконок
 
-## Контакты
-
-- GitHub: [your-github](https://github.com/your-username)
-- Telegram: [your-telegram](https://t.me/your-telegram)
-- Steam: [your-steam](https://steamcommunity.com/id/your-steam)
-- Yandex Music: [your-music](https://music.yandex.ru/users/your-music)
