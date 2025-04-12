@@ -42,7 +42,6 @@ body {
     z-index: 1000;
     padding: 1rem 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    animation: slideIn 0.5s ease-out;
 }
 
 .navbar .container {
@@ -67,7 +66,7 @@ body {
 .nav-links a {
     color: var(--text-secondary);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     position: relative;
 }
 
@@ -79,15 +78,16 @@ body {
 .nav-links a::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -5px;
     left: 0;
     width: 0;
     height: 2px;
     background: var(--accent-color);
-    transition: width 0.3s ease;
+    transition: var(--transition);
 }
 
-.nav-links a:hover::after {
+.nav-links a:hover::after,
+.nav-links a.active::after {
     width: 100%;
 }
 
@@ -114,48 +114,6 @@ body {
     }
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
 /* Главная страница */
 .hero {
     text-align: center;
@@ -170,14 +128,14 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.hero h1 {
-    font-size: 3.5rem;
+h1 {
+    font-size: 3rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--accent-color), #ff6b6b);
-    -webkit-background-clip: text;
+    background: linear-gradient(45deg, var(--accent-color), #ffffff);
     background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: transparent;
-    animation: gradient 3s ease infinite;
 }
 
 .subtitle {
@@ -234,8 +192,6 @@ body {
     padding: 1.5rem;
     border-radius: 15px;
     transition: var(--transition);
-    animation: fadeIn 0.5s ease-out forwards;
-    opacity: 0;
 }
 
 .stack-category:hover {
@@ -259,13 +215,11 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: var(--transition);
 }
 
 .stack-item:hover {
-    transform: scale(1.1);
-    background: var(--accent-color);
-    color: white;
+    background: rgba(114, 137, 218, 0.2);
 }
 
 /* Проекты */
@@ -280,15 +234,14 @@ body {
     background: var(--card-bg);
     border-radius: 15px;
     padding: 1.5rem;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: fadeIn 0.5s ease-out;
 }
 
 .project-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .project-card h3 {
@@ -320,27 +273,10 @@ body {
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
 .project-link:hover {
     background: #5b6eae;
-}
-
-.project-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.project-link:hover::before {
-    left: 0;
 }
 
 .error {
@@ -381,10 +317,46 @@ body {
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .nav-links {
-        display: none;
+    .navbar {
+        padding: 0.5rem 0;
     }
-    
+
+    .navbar .container {
+        justify-content: space-between;
+        padding: 0 1rem;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        transition: right 0.3s ease;
+        z-index: 1000;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a {
+        padding: 1rem 0;
+        font-size: 1.2rem;
+        width: 100%;
+        text-align: center;
+    }
+
     h1 {
         font-size: 2.5rem;
     }
@@ -407,7 +379,6 @@ body {
     transition: box-shadow .3s ease, transform .2s ease;
     border-radius: 15px;
     margin: 0 auto 2rem;
-    animation: fadeIn 1s ease-out, float 3s ease-in-out infinite;
 }
 
 .card-info {
@@ -462,7 +433,7 @@ body {
     width: 18px;
     fill: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: fill 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
@@ -479,8 +450,8 @@ body {
 }
 
 .card-social__item svg:hover {
-    transform: scale(1.2) rotate(10deg);
     fill: var(--accent-color);
+    transform: scale(1.1);
 }
 
 .card-avatar:hover {
@@ -516,12 +487,11 @@ body {
     border: none;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    transition: all 0.3s ease;
+    transition: .2s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    animation: fadeIn 0.5s ease-out;
 }
 
 .card1 {
@@ -652,11 +622,94 @@ body {
     white-space: nowrap;
 }
 
-.card1:hover, .card2:hover, .card3:hover, .card4:hover {
-    animation: pulse 1s infinite;
+/* Новые анимации */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--accent-color);
+    }
+    100% {
+        box-shadow: 0 0 5px var(--accent-color);
+    }
 }
 
-/* Анимация для заголовков секций */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Применение новых анимаций */
+.nav-links a:hover {
+    animation: shake 0.5s ease;
+}
+
+.project-card:hover {
+    animation: glow 2s infinite;
+}
+
+.card:hover {
+    animation: bounce 1s ease;
+}
+
+.card-social__item svg:hover {
+    animation: spin 0.5s ease;
+}
+
+/* Анимация для кнопок */
+.project-link {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.project-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.project-link:hover::before {
+    left: 100%;
+}
+
+/* Анимация для заголовков */
 .section h2 {
     position: relative;
     display: inline-block;
@@ -675,11 +728,72 @@ body {
     animation-delay: 0.5s;
 }
 
-@keyframes widthGrow {
-    from {
-        width: 0;
+/* Анимация для карточек контактов */
+.card1, .card2, .card3, .card4 {
+    transition: all 0.3s ease;
+}
+
+.card1:hover, .card2:hover, .card3:hover, .card4:hover {
+    transform: scale(1.1) rotate(5deg);
+    animation: glow 2s infinite;
+}
+
+/* Анимация для стека технологий */
+.stack-item {
+    transition: all 0.3s ease;
+}
+
+.stack-item:hover {
+    transform: scale(1.1) translateY(-5px);
+    animation: glow 2s infinite;
+}
+
+/* Мобильное меню */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
     }
-    to {
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        transition: right 0.3s ease;
+        z-index: 1000;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a {
+        padding: 1rem 0;
+        font-size: 1.2rem;
         width: 100%;
+        text-align: center;
+    }
+
+    .navbar .container {
+        justify-content: space-between;
+        padding: 0 1rem;
     }
 }
