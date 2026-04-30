@@ -3,80 +3,550 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dmitriy — Developer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <title>Dmitriy — Developer & Analyst</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --background: hsl(201, 100%, 13%);
+      --foreground: hsl(0, 0%, 100%);
+      --muted-foreground: hsl(240, 4%, 66%);
+      --primary: hsl(0, 0%, 100%);
+      --primary-foreground: hsl(0, 0%, 4%);
+      --secondary: hsl(0, 0%, 10%);
+      --muted: hsl(0, 0%, 10%);
+      --accent: hsl(0, 0%, 10%);
+      --border: hsl(0, 0%, 18%);
+      --input: hsl(0, 0%, 18%);
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Video Background ── */
+    .video-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* ── Liquid Glass ── */
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.15) 80%,
+        rgba(255,255,255,0.45) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ── Animations ── */
+    @keyframes fade-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-rise           { animation: fade-rise 0.8s ease-out both; }
+    .animate-fade-rise-delay     { animation: fade-rise 0.8s ease-out 0.2s both; }
+    .animate-fade-rise-delay-2   { animation: fade-rise 0.8s ease-out 0.4s both; }
+
+    /* ── Scroll reveal ── */
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-section.in-view { opacity: 1; transform: translateY(0); }
+
+    /* ── Hero wrapper (fullscreen video section) ── */
+    #hero-wrapper {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 32px;
+      max-width: 80rem;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.875rem;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .nav-logo sup { font-size: 0.75rem; vertical-align: super; }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-family: var(--font-body);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--foreground); }
+
+    .nav-cta {
+      font-size: 0.875rem;
+      color: var(--foreground);
+      border-radius: 9999px;
+      padding: 10px 24px;
+      text-decoration: none;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .nav-cta:hover { transform: scale(1.03); }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    /* ── Hero Section ── */
+    #hero {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 128px 24px 160px;
+    }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: -0.068em;
+      max-width: 80rem;
+      font-weight: 400;
+      color: var(--foreground);
+    }
+
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--muted-foreground);
+    }
+
+    .hero-sub {
+      color: var(--muted-foreground);
+      font-size: 1rem;
+      max-width: 42rem;
+      margin-top: 32px;
+      line-height: 1.75;
+    }
+
+    @media (min-width: 640px) { .hero-sub { font-size: 1.125rem; } }
+
+    .hero-btn {
+      border-radius: 9999px;
+      padding: 20px 56px;
+      font-size: 1rem;
+      color: var(--foreground);
+      margin-top: 48px;
+      text-decoration: none;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .hero-btn:hover { transform: scale(1.03); }
+
+    /* ── Below-fold sections ── */
+    .below-fold {
+      background: var(--background);
+      position: relative;
+      z-index: 10;
+    }
+
+    section:not(#hero) {
+      padding: 96px 48px;
+      border-top: 1px solid var(--border);
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--muted-foreground);
+      margin-bottom: 48px;
+      text-transform: uppercase;
+      font-family: var(--font-body);
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) { .about-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .about-stat {
+      background: var(--background);
+      padding: 52px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: background 0.25s;
+    }
+
+    .about-stat:hover { background: rgba(255, 255, 255, 0.025); }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 3.25rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--foreground);
+    }
+
+    .stat-label {
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+    }
+
+    /* ── Stack ── */
+    #stack {
+      padding-left: 0;
+      padding-right: 0;
+      max-width: 100%;
+    }
+
+    #stack .section-label { padding: 0 48px; }
+
+    .stack-marquee {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+      margin-bottom: 72px;
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marquee 38s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-track span {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--muted-foreground);
+      padding: 0 44px;
+      border-right: 1px solid var(--border);
+      text-transform: uppercase;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .marquee-track span:hover { color: var(--foreground); }
+
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .stats-block {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 0 48px;
+    }
+
+    .github-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+    }
+
+    .codewars-img {
+      height: 36px;
+      display: block;
+    }
+
+    /* ── Connect ── */
+    .connect-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 9.5vw, 9.5rem);
+      font-weight: 400;
+      letter-spacing: -0.035em;
+      line-height: 0.88;
+      margin-bottom: 80px;
+      color: var(--foreground);
+    }
+
+    .social-links { border-top: 1px solid var(--border); }
+
+    .social-link {
+      display: grid;
+      grid-template-columns: 44px 180px 1fr 28px;
+      align-items: center;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--foreground);
+      transition: padding-left 0.2s ease, background 0.2s ease;
+    }
+
+    .social-link:hover {
+      padding-left: 20px;
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .social-num {
+      font-size: 0.5625rem;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      letter-spacing: 0.12em;
+    }
+
+    .social-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .social-handle {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+
+    .social-arrow {
+      font-size: 1.25rem;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .social-link:hover .social-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .footer-wrapper {
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      section:not(#hero) { padding: 72px 24px; }
+      #stack .section-label { padding: 0 24px; }
+      .stats-block { padding: 0 24px; }
+
+      .social-link {
+        grid-template-columns: 36px 1fr auto;
+        gap: 16px;
+      }
+      .social-handle { display: none; }
+
+      footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+        padding: 20px 24px;
+      }
+
+      .about-stat { padding: 32px 20px; }
+      .stat-num { font-size: 2.25rem; }
+    }
+  </style>
 </head>
 <body>
-  <canvas id="bg-canvas"></canvas>
-  <div class="cursor-glow" id="cursor-glow"></div>
 
-  <nav>
-    <span class="nav-logo">D©</span>
-    <div class="nav-links">
-      <a href="#about">ABOUT</a>
-      <a href="#stack">STACK</a>
-      <a href="#connect">CONNECT</a>
-    </div>
-  </nav>
+  <!-- ── HERO (fullscreen video) ── -->
+  <div id="hero-wrapper">
 
-  <section id="hero">
-    <div class="hero-label">DEVELOPER · ANALYST · ENTP 7W8</div>
-    <h1 class="hero-name">
-      <span class="line-wrap"><span class="reveal-line">DMITRIY</span></span>
-    </h1>
-    <p class="hero-sub">Business Analyst @ Sber &nbsp;·&nbsp; IT-College Sirius &nbsp;·&nbsp; Age 18</p>
-    <a href="#connect" class="hero-cta">GET IN TOUCH ©</a>
-  </section>
+    <!-- Video Background -->
+    <video
+      class="video-bg"
+      autoplay
+      loop
+      muted
+      playsinline
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
+    </video>
 
-  <section id="about" class="reveal-section">
-    <div class="section-label">// PROFILE</div>
-    <div class="about-grid">
-      <div class="about-stat">
-        <span class="stat-num">18</span>
-        <span class="stat-label">YEARS OLD</span>
-      </div>
-      <div class="about-stat">
-        <span class="stat-num">ENTP</span>
-        <span class="stat-label">MBTI · 7W8</span>
-      </div>
-      <div class="about-stat">
-        <span class="stat-num">SBR</span>
-        <span class="stat-label">SBER ANALYST</span>
-      </div>
-      <div class="about-stat">
-        <span class="stat-num">IT</span>
-        <span class="stat-label">SIRIUS COLLEGE</span>
-      </div>
-    </div>
-  </section>
+    <!-- Navigation -->
+    <nav>
+      <a href="#" class="nav-logo">Dmitriy<sup>©</sup></a>
 
-  <section id="stack" class="reveal-section">
-    <div class="section-label padded">// STACK &amp; TOOLS</div>
-    <div class="stack-marquee">
-      <div class="marquee-track">
-        <span>Python</span><span>C++</span><span>Kotlin</span>
-        <span>TensorFlow</span><span>PyTorch</span><span>NumPy</span>
-        <span>Pandas</span><span>Git</span><span>Figma</span>
-        <span>VS Code</span><span>JetBrains</span><span>Unreal Engine</span>
-        <span>Linux Mint</span><span>Arch Linux</span><span>PowerPoint</span>
-        <span>Python</span><span>C++</span><span>Kotlin</span>
-        <span>TensorFlow</span><span>PyTorch</span><span>NumPy</span>
-        <span>Pandas</span><span>Git</span><span>Figma</span>
-        <span>VS Code</span><span>JetBrains</span><span>Unreal Engine</span>
-        <span>Linux Mint</span><span>Arch Linux</span><span>PowerPoint</span>
+      <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#stack">Stack</a>
+        <a href="#connect">Connect</a>
       </div>
-    </div>
 
-    <div class="stats-block padded">
-      <div class="stats-row">
+      <a href="#connect" class="nav-cta liquid-glass">Get In Touch</a>
+    </nav>
+
+    <!-- Hero Content -->
+    <section id="hero">
+      <h1 class="hero-h1 animate-fade-rise">
+        Code that speaks<br>
+        through the <em>silence.</em>
+      </h1>
+
+      <p class="hero-sub animate-fade-rise-delay">
+        Business Analyst @ Sber · IT-College Sirius · Age 18.<br>
+        Developer, analyst, and builder — crafting tools for deep thinkers and bold creators.
+      </p>
+
+      <a href="#connect" class="hero-btn liquid-glass animate-fade-rise-delay-2">
+        Get In Touch
+      </a>
+    </section>
+
+  </div>
+
+  <!-- ── BELOW-FOLD CONTENT ── -->
+  <div class="below-fold">
+
+    <!-- About -->
+    <section id="about" class="reveal-section">
+      <div class="section-label">// Profile</div>
+      <div class="about-grid">
+        <div class="about-stat">
+          <span class="stat-num">18</span>
+          <span class="stat-label">Years Old</span>
+        </div>
+        <div class="about-stat">
+          <span class="stat-num">ENTP</span>
+          <span class="stat-label">MBTI · 7W8</span>
+        </div>
+        <div class="about-stat">
+          <span class="stat-num">SBR</span>
+          <span class="stat-label">Sber Analyst</span>
+        </div>
+        <div class="about-stat">
+          <span class="stat-num">IT</span>
+          <span class="stat-label">Sirius College</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stack -->
+    <section id="stack" class="reveal-section">
+      <div class="section-label">// Stack &amp; Tools</div>
+
+      <div class="stack-marquee">
+        <div class="marquee-track">
+          <span>Python</span><span>C++</span><span>Kotlin</span>
+          <span>TensorFlow</span><span>PyTorch</span><span>NumPy</span>
+          <span>Pandas</span><span>Git</span><span>Figma</span>
+          <span>VS Code</span><span>JetBrains</span><span>Unreal Engine</span>
+          <span>Linux Mint</span><span>Arch Linux</span><span>PowerPoint</span>
+          <span>Python</span><span>C++</span><span>Kotlin</span>
+          <span>TensorFlow</span><span>PyTorch</span><span>NumPy</span>
+          <span>Pandas</span><span>Git</span><span>Figma</span>
+          <span>VS Code</span><span>JetBrains</span><span>Unreal Engine</span>
+          <span>Linux Mint</span><span>Arch Linux</span><span>PowerPoint</span>
+        </div>
+      </div>
+
+      <div class="stats-block">
         <img
           src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=Toster1903&theme=github_dark"
           alt="GitHub Stats"
           class="github-img"
         />
-      </div>
-      <div class="stats-row">
         <a href="https://www.codewars.com/users/Toster1903/badges" target="_blank">
           <img
             src="https://www.codewars.com/users/Toster1903/badges/large"
@@ -85,57 +555,71 @@
           />
         </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="connect" class="reveal-section">
-    <div class="section-label">// CONNECT</div>
-    <h2 class="connect-title">LET'S<br>TALK.</h2>
-    <div class="social-links">
-      <a href="https://t.me/LowShkeeef" target="_blank" class="social-link">
-        <span class="social-num">01</span>
-        <span class="social-name">TELEGRAM</span>
-        <span class="social-handle">@LowShkeeef</span>
-        <span class="social-arrow">→</span>
-      </a>
-      <a href="https://github.com/Toster1903" target="_blank" class="social-link">
-        <span class="social-num">02</span>
-        <span class="social-name">GITHUB</span>
-        <span class="social-handle">Toster1903</span>
-        <span class="social-arrow">→</span>
-      </a>
-      <a href="https://open.spotify.com/user/31zwep2rzu53ky6wxvj62h7ckhhe?si=kqlWVubYRTWExL8u3uQ3aQ" target="_blank" class="social-link">
-        <span class="social-num">03</span>
-        <span class="social-name">SPOTIFY</span>
-        <span class="social-handle">My Playlists</span>
-        <span class="social-arrow">→</span>
-      </a>
-      <a href="https://s.team/p/jnqh-wnpb/RQJQPNFP" target="_blank" class="social-link">
-        <span class="social-num">04</span>
-        <span class="social-name">STEAM</span>
-        <span class="social-handle">Profile</span>
-        <span class="social-arrow">→</span>
-      </a>
-      <a href="https://www.instagram.com/lowshkeef?igsh=YTR0eXpjeTZwazZk" target="_blank" class="social-link">
-        <span class="social-num">05</span>
-        <span class="social-name">INSTAGRAM</span>
-        <span class="social-handle">@lowshkeef</span>
-        <span class="social-arrow">→</span>
-      </a>
-      <a href="https://t.me/+7otwLLg0YNFkYWIy" target="_blank" class="social-link">
-        <span class="social-num">06</span>
-        <span class="social-name">TG CHANNEL</span>
-        <span class="social-handle">Channel</span>
-        <span class="social-arrow">→</span>
-      </a>
-    </div>
-  </section>
+    <!-- Connect -->
+    <section id="connect" class="reveal-section">
+      <div class="section-label">// Connect</div>
+      <h2 class="connect-title">Let's<br>Talk.</h2>
+      <div class="social-links">
+        <a href="https://t.me/LowShkeeef" target="_blank" class="social-link">
+          <span class="social-num">01</span>
+          <span class="social-name">Telegram</span>
+          <span class="social-handle">@LowShkeeef</span>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://github.com/Toster1903" target="_blank" class="social-link">
+          <span class="social-num">02</span>
+          <span class="social-name">GitHub</span>
+          <span class="social-handle">Toster1903</span>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://open.spotify.com/user/31zwep2rzu53ky6wxvj62h7ckhhe?si=kqlWVubYRTWExL8u3uQ3aQ" target="_blank" class="social-link">
+          <span class="social-num">03</span>
+          <span class="social-name">Spotify</span>
+          <span class="social-handle">My Playlists</span>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://s.team/p/jnqh-wnpb/RQJQPNFP" target="_blank" class="social-link">
+          <span class="social-num">04</span>
+          <span class="social-name">Steam</span>
+          <span class="social-handle">Profile</span>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://www.instagram.com/lowshkeef?igsh=YTR0eXpjeTZwazZk" target="_blank" class="social-link">
+          <span class="social-num">05</span>
+          <span class="social-name">Instagram</span>
+          <span class="social-handle">@lowshkeef</span>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://t.me/+7otwLLg0YNFkYWIy" target="_blank" class="social-link">
+          <span class="social-num">06</span>
+          <span class="social-name">TG Channel</span>
+          <span class="social-handle">Channel</span>
+          <span class="social-arrow">→</span>
+        </a>
+      </div>
+    </section>
 
-  <footer>
-    <span>© 2026 DMITRIY</span>
-    <span>DEVELOPER — ANALYST — BUILDER</span>
-  </footer>
+  </div>
 
-  <script src="js/main.js"></script>
+  <!-- Footer -->
+  <div class="footer-wrapper">
+    <footer>
+      <span>© 2026 Dmitriy</span>
+      <span>Developer — Analyst — Builder</span>
+    </footer>
+  </div>
+
+  <script>
+    /* ── Scroll reveal ── */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('in-view');
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal-section').forEach(el => io.observe(el));
+  </script>
 </body>
 </html>
